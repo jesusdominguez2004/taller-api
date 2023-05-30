@@ -6,19 +6,47 @@ const StarWars = () => {
     const [personajes, setPersonajes] = useState([]);
     const [paginacion, setPaginacion] = useState(0);
 
-    // Funciones
+
+    // Funciones API
+    const traerPersonajes = async (next) => {
+        try {
+            const solicitud = await fetch(`https://swapi.dev/api/people/?page=${next}`);
+            const { results } = await solicitud.json();
+            const pesonajesConImagenes = results.map((x) => ({
+                ...x,
+                image: `https://starwars-visualguide.com/assets/img/characters/${getIdFromUrl(x.url)}.jpg`,
+            }));
+            setPersonajes(pesonajesConImagenes);
+            console.log(personajesConImagen);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getIdFromUrl = (url) => {
+        const urlList = url.split('/');
+        return urlList[urlList.lenght - 2]
+    }
+
+    // Funciones botones
     const traer = () => {
         setPaginacion(paginacion + 1);
+        traerPersonajes(paginacion + 1);
     }
 
     const siguiente = () => {
         setPaginacion(paginacion + 1);
+        traerPersonajes(paginacion + 1);
     }
 
     const atras = () => {
-        setPaginacion(paginacion - 1);
+        if (paginacion > 1) {
+            setPaginacion(paginacion - 1);
+            traerPersonajes(paginacion - 1);
+        }
     }
 
+    // HTML retornado
     return (
         <div>
             <h1>Solicitud API Star Wars®</h1>
