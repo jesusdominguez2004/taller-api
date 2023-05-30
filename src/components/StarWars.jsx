@@ -6,7 +6,6 @@ const StarWars = () => {
     const [personajes, setPersonajes] = useState([]);
     const [paginacion, setPaginacion] = useState(0);
 
-
     // Funciones API
     const traerPersonajes = async (next) => {
         try {
@@ -17,7 +16,7 @@ const StarWars = () => {
                 image: `https://starwars-visualguide.com/assets/img/characters/${getIdFromUrl(x.url)}.jpg`,
             }));
             setPersonajes(pesonajesConImagenes);
-            console.log(personajesConImagen);
+            console.log(pesonajesConImagenes);
         } catch (error) {
             console.log(error);
         }
@@ -25,8 +24,8 @@ const StarWars = () => {
 
     const getIdFromUrl = (url) => {
         const urlList = url.split('/');
-        return urlList[urlList.lenght - 2]
-    }
+        return urlList[urlList.length - 2]
+    }    
 
     // Funciones botones
     const traer = () => {
@@ -55,6 +54,14 @@ const StarWars = () => {
             <button onClick={traer}>Personajes</button>
             <button onClick={siguiente}>Siguiente</button>
             <button onClick={atras}>Atrás</button>
+            {
+                personajes.map(({name, image}) => (
+                    <div key={name}>
+                        <h3>NOMBRE: {name}</h3>
+                        <img src={image} alt={name} />
+                    </div>
+                ))
+            }
         </div>
     )
 }
