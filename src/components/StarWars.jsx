@@ -7,10 +7,12 @@ const StarWars = () => {
     const [planetas, setPlanetas] = useState([]);
     const [peliculas, setPeliculas] = useState([]);
     const [naves, setNaves] = useState([]);
+    const [vehiculos, setVehiculos] = useState([]);
     const [paginacionPersonajes, setPaginacionPersonajes] = useState(0);
     const [paginacionPlanetas, setPaginacionPlanetas] = useState(0);
     const [paginacionPeliculas, setPaginacionPeliculas] = useState(0);
     const [paginacionNaves, setPaginacionNaves] = useState(0);
+    const [paginacionVehiculos, setPaginacionVehiculos] = useState(0);
 
     // Funciones API
     const traerPersonajes = async (next) => {
@@ -68,6 +70,21 @@ const StarWars = () => {
             }));
             setNaves(navesConImagenes);
             console.log(navesConImagenes);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const traerVehiculos = async (next) => {
+        try {
+            const solicitud = await fetch(`https://swapi.dev/api/vehicles/?page=${next}`);
+            const { results } = await solicitud.json();
+            const vehiculosConImagenes = results.map((x) => ({
+                ...x,
+                image: `https://starwars-visualguide.com/assets/img/vehicles/${getIdFromUrl(x.url)}.jpg`,
+            }));
+            setVehiculos(vehiculosConImagenes);
+            console.log(vehiculosConImagenes);
         } catch (error) {
             console.log(error);
         }
@@ -150,12 +167,31 @@ const StarWars = () => {
         }
     }
 
+    // Funciones botones VEHÍCULOS
+    const traerVehiculosAux = () => {
+        setPaginacionVehiculos(paginacionVehiculos + 1);
+        traerVehiculos(paginacionVehiculos + 1);
+    }
+
+    const siguienteVehiculos = () => {
+        setPaginacionVehiculos(paginacionVehiculos + 1);
+        traerVehiculos(paginacionVehiculos + 1);
+    }
+
+    const atrasVehiculos = () => {
+        if (paginacionVehiculos > 1) {
+            setPaginacionVehiculos(paginacionVehiculos - 1);
+            traerVehiculos(paginacionVehiculos - 1);
+        }
+    }
+
     // HTML retornado
     return (
         <div>
             <h1>Solicitud API Star Wars®</h1>
+            <h2>Universidad de la Costa</h2>
             <h2>Buenas Prácticas de Desarrollo de Software</h2>
-            <h2>© Jesús Domínguez</h2>
+            <h2>© Jesús Alberto Domínguez Charris</h2>
             <hr />
             <p>NOTA: Todos los personajes tienen imagen.</p>
             <button onClick={traerPersonajesAux}>Personajes</button>
@@ -170,7 +206,7 @@ const StarWars = () => {
                 ))
             }
             <hr />
-            <p>NOTA: Hay planetas que no tiene imagen.</p>
+            <p>NOTA: Hay planetas que no tienen imagen.</p>
             <button onClick={traerPlanetasAux}>Planetas</button>
             <button onClick={siguientePlanetas}>Siguiente</button>
             <button onClick={atrasPlanetas}>Atrás</button>
@@ -210,6 +246,23 @@ const StarWars = () => {
                     </div>
                 ))
             }
+            <hr />
+            <p>NOTA: Hay vehículos que no tienen imagen.</p>
+            <button onClick={traerVehiculosAux}>Vehículos</button>
+            <button onClick={siguienteVehiculos}>Siguiente</button>
+            <button onClick={atrasVehiculos}>Atrás</button>
+            {
+                vehiculos.map(({name, image}) => (
+                    <div key={name}>
+                        <h3>NOMBRE: {name}</h3>
+                        <img src={image} alt={name} />
+                    </div>
+                ))
+            }
+            <hr />
+            <h2>© Jesús Alberto Domínguez Charris</h2>
+            <h2>Buenas Prácticas de Desarrollo de Software</h2>
+            <h2>Universidad de la Costa</h2>
         </div>
     )
 }
